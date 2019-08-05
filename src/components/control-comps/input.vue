@@ -1,19 +1,27 @@
 <template>
   <div class="ncform-input">
     <!-- 没有自动补全 -->
-    <el-input
+    <a-input
       v-if="!mergeConfig.autocomplete"
       :disabled="disabled"
       :readonly="readonly"
       :placeholder="placeholder"
       v-show="!hidden"
-      :clearable="mergeConfig.clearable"
       :type="mergeConfig.type === 'file' ? 'text' : mergeConfig.type"
-      :prefix-icon="mergeConfig.prefixIcon"
-      :suffix-icon="mergeConfig.suffixIcon"
       v-model="inputVal"
+      ref="inputComponent"
     >
-      <template v-if="mergeConfig.type !== 'file' && mergeConfig.compound">
+      <template v-if="mergeConfig.prefixIcon">
+        <a-icon slot="prefix" :type="mergeConfig.prefixIcon" />
+      </template>
+      <template v-if="mergeConfig.suffixIcon">
+        <a-icon slot="suffix" :type="mergeConfig.suffixIcon" />
+      </template>
+      <template v-if="mergeConfig.clearable">
+        <a-icon v-show="inputVal" slot="suffix" type="close-circle"  @click="emitEmpty"/>
+      </template>
+
+<!--       <template v-if="mergeConfig.type !== 'file' && mergeConfig.compound">
         <template
           slot="prepend"
           v-if="mergeConfig.compound.prependLabel"
@@ -62,9 +70,9 @@
           ></el-option>
         </el-select>
       </template>
-
+ -->
       <!--上传类型-->
-      <template v-else-if="mergeConfig.type === 'file' && mergeConfig.upload">
+<!--       <template v-else-if="mergeConfig.type === 'file' && mergeConfig.upload">
         <el-button
           slot="append"
           v-if="mergeConfig.upload.uploadUrl"
@@ -79,33 +87,35 @@
             @change="handleFileChange"
           >
         </el-button>
-      </template>
-    </el-input>
+      </template> -->
+    </a-input>
 
     <!-- 自动补全 -->
-    <el-autocomplete
+    <a-auto-complete
       v-else
       :disabled="disabled"
       :readonly="readonly"
       :placeholder="placeholder"
       v-show="!hidden"
-      :clearable="mergeConfig.clearable"
       :type="mergeConfig.type"
-      :prefix-icon="mergeConfig.prefixIcon"
-      :suffix-icon="mergeConfig.suffixIcon"
-      :fetch-suggestions="querySearch"
+      :dataSource="dataSource"
+      @search="querySearch"
+      @select="onSelect"
       :trigger-on-focus="!!mergeConfig.autocomplete.immediateShow"
       :value-key="mergeConfig.autocomplete.itemValueField || 'value'"
       v-model="inputVal"
     >
-      <template
-        slot-scope="props"
-        v-if="mergeConfig.autocomplete && mergeConfig.autocomplete.itemTemplate"
-      >
-        <component :is="itemTemplate" :item="props.item"></component>
+      <template v-if="mergeConfig.prefixIcon">
+        <a-icon slot="prefix" :type="mergeConfig.prefixIcon" />
+      </template>
+      <template v-if="mergeConfig.suffixIcon">
+        <a-icon slot="suffix" :type="mergeConfig.suffixIcon" />
+      </template>
+      <template v-if="mergeConfig.clearable">
+        <a-icon v-show="inputVal" slot="suffix" type="close-circle"  @click="emitEmpty"/>
       </template>
 
-      <template v-if="mergeConfig.compound">
+<!--       <template v-if="mergeConfig.compound">
         <template
           slot="prepend"
           v-if="mergeConfig.compound.prependLabel"
@@ -153,8 +163,8 @@
             :key="item[mergeConfig.compound.appendSelectVal.itemValueField]"
           ></el-option>
         </el-select>
-      </template>
-    </el-autocomplete>
+      </template> -->
+    </a-auto-complete>
   </div>
 </template>
 
@@ -173,6 +183,18 @@
   }
   .el-autocomplete {
     width: 100%;
+  }
+  .anticon-close-circle {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s;
+    font-size: 12px;
+  }
+  .anticon-close-circle:hover {
+    color: #999;
+  }
+  .anticon-close-circle:active {
+    color: #666;
   }
 }
 </style>
@@ -322,6 +344,8 @@ export default {
         template: ""
       },
 
+      dataSource: [],
+
       isUploading: false,
 
       inputVal: "",
@@ -397,19 +421,27 @@ export default {
   },
 
   methods: {
+    emitEmpty () {
+      this.$data.inputVal = ''
+      this.$refs.inputComponent.focus()      
+    },
+
     querySearch(queryString, cb) {
       const autoCpl = this.mergeConfig.autocomplete;
-
+      if (queryString=='') {
+        this.$data.dataSource = []
+        return
+      }
       // 本地数据源的处理
       if (autoCpl.enumSource) {
-        cb(
-          autoCpl.enumSource.filter(item => {
-            let itemVal = item[autoCpl.itemValueField || "value"]
-              .toString()
-              .toLowerCase();
-            return itemVal.indexOf(queryString.toLowerCase()) !== -1;
-          })
-        );
+        this.$data.dataSource = autoCpl.enumSource.filter(item => {
+          let itemVal = item[autoCpl.itemValueField || "value"]
+            .toString()
+            .toLowerCase();
+          return itemVal.indexOf(queryString.toLowerCase()) !== -1;
+        }).map(item => {
+          return item[autoCpl.itemValueField || "value"].toString().toLowerCase();
+        })      
         return;
       }
 
@@ -422,11 +454,12 @@ export default {
         options.params[autoCpl.enumSourceRemote.paramName] = queryString;
 
       this.$http(options).then(res => {
-        cb(
-          autoCpl.enumSourceRemote.resField
-            ? _get(res.data, autoCpl.enumSourceRemote.resField)
-            : res.data
-        );
+        let resData = autoCpl.enumSourceRemote.resField
+          ? _get(res.data, autoCpl.enumSourceRemote.resField)
+          : res.data
+        this.$data.dataSource = resData.map(item => {
+            return item[autoCpl.itemValueField || "value"].toString().toLowerCase();
+          })
       });
     },
 
