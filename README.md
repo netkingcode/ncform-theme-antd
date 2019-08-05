@@ -6,7 +6,14 @@ ncform widgets of ant design vue
 ### input
 
 not support attr:
-### autocomplete
+#### autocomplete
 * immediateShow
 * itemTemplate
-### compound
+#### compound
+#### Upload
+
+
+### select
+- filterLocal
+
+### color picker

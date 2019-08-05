@@ -1,17 +1,18 @@
 <template>
-  <el-date-picker class="ncform-date-picker"
-    v-if="type && typeOptions[type]"
-    :placeholder="placeholder || $nclang(typeOptions[type].placeholder)"
-    :disabled="disabled"
-    :readonly="readonly"
-    :clearable="mergeConfig.clearable"
-    v-show="!hidden"
-    v-model="modelVal"
-    :type="type"
-    :format="mergeConfig.format || $nclang(typeOptions[type].format)"
-    :value-format="mergeConfig.valueFormat"
-    >
-  </el-date-picker>
+  <div>
+    <a-date-picker class="ncform-date-picker"
+      v-if="type === 'date'"
+      :placeholder="placeholder || $nclang(typeOptions[type].placeholder)"
+      :disabled="disabled"
+      :readonly="readonly"
+      :allowClear="mergeConfig.clearable"
+      v-show="!hidden"
+      v-model="modelVal"
+      :format="mergeConfig.format || $nclang(typeOptions[type].format)"
+      :value-format="mergeConfig.valueFormat"
+      >
+    </a-date-picker>
+  </div>
 </template>
 
 <style lang="scss">

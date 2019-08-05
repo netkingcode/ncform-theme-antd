@@ -1,13 +1,13 @@
 <template>
     <div class="ncform-input-number">
-        <el-input-number
+        <a-input-number
           :disabled="disabled || readonly"
           v-show="!hidden"
           v-model="modelVal"
           :min="mergeConfig.min"
           :max="mergeConfig.max"
           :step="mergeConfig.step"
-        ></el-input-number>
+        ></a-input-number>
     </div>
 </template>
 

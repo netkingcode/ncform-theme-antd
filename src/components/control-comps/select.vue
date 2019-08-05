@@ -1,26 +1,25 @@
 <template>
-  <el-select
+  <a-select
     v-model="modelVal"
     :placeholder="placeholder || $nclang('selectPls')"
     v-show="!hidden"
     :disabled="disabled || readonly"
-    :clearable="mergeConfig.clearable"
-    :multiple="mergeConfig.multiple"
-    :filterable="mergeConfig.filterable"
-    :remote="!isLocalSource && !mergeConfig.filterLocal"
-    :remote-method="(!isLocalSource && !mergeConfig.filterLocal) ? remoteMethod : null"
+    :allowClear="mergeConfig.clearable"
+    :mode="mergeConfig.multiple? 'multiple' : 'default'"
+    :showSearch="mergeConfig.filterable"
     :loading="loading"
     @change="handleChange"
   >
-    <el-option
+    <a-select-option
       v-for="item in optionsData"
       :key="item[mergeConfig.itemValueField]"
       :label="item[mergeConfig.itemLabelField]"
       :value="item[mergeConfig.itemValueField]"
     >
       <component v-if="itemTemplate.template" :item="item" :is="itemTemplate"></component>
-    </el-option>
-  </el-select>
+      <template v-else>{{item[mergeConfig.itemLabelField]}}</template>
+    </a-select-option>
+  </a-select>
 </template>
 
 <style lang="scss" scoped>
@@ -64,11 +63,12 @@ export default {
   data() {
     return {
       // modelVal：请使用该值来绑定实际的组件的model
+      modelVal: [],
 
       // 组件特有的配置属性
       defaultConfig: {
         multiple: false, // 是否多选
-        clearable: true, // 是否出现清空选项
+        clearable: false, // 是否出现清空选项
         filterable: false, // 是否可搜索，即可输入关键字
         filterLocal: true, // 搜索本地的还是远程的数据，当为true时，就算配了enumSourceRemote，也只会从远程取一次数据
         itemTemplate: "", // 显示项的模板

@@ -1,14 +1,13 @@
 <template>
-  <el-input
+  <a-textarea
     :disabled="disabled"
     :readonly="readonly"
     v-show="!hidden"
     :placeholder="placeholder"
-    type="textarea"
     v-model="modelVal"
     :rows="mergeConfig.rows"
     :autosize="mergeConfig.autoSize"
-  ></el-input>
+  ></a-textarea>
 </template>
 
 <style lang="scss" scoped>
