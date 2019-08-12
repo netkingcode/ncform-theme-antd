@@ -73,13 +73,15 @@ export default {
   },
 
   created() {
-    console.log("==created")
-    console.log(this.value)
-    if (this.value) {
-      this.$data.momentModelVal = moment(Number(this.value))
-    } else {
-      this.$data.momentModelVal = null
-    }    
+    this.$data.momentModelVal = this._convertValue(this.value)
+    this.$data.defaultValue = this.$data.momentModelVal
+    // console.log("==created")
+    // console.log(this.value)
+    // if (this.value) {
+    //   this.$data.momentModelVal = moment(Number(this.value))
+    // } else {
+    //   this.$data.momentModelVal = null
+    // }    
   },
 
   mounted() {
@@ -120,18 +122,15 @@ export default {
         valueFormat: ''
       },
       // modelVal：请使用该值来绑定实际的组件的model
-      momentModelVal: null
+      momentModelVal: null,
+      defaultValue: null      
     };
   },
 
   computed: {
-    defaultValue() {
-      if (this.value) {
-        return moment(Number(this.value))
-      } else {
-        return null
-      }
-    },
+    // defaultValue() {
+    //   return this._convertValue(this.value)
+    // },
     // disabled / readonly / hidden / placeholder 你可以直接使用这些变量来控制组件的行为
     type() {
       if(!this.$data.typeOptions[this.mergeConfig.type]){
@@ -166,6 +165,16 @@ export default {
       }
       
       //return `${newVal ? (this.mergeConfig.valueFormat ? newVal : +new Date(newVal)) : ''}`;
+    },
+    _convertValue(val){
+      if (!val) return null
+      var parsedVal
+      if (!this.mergeConfig.valueFormat || this.mergeConfig.valueFormat === 'timestamp') {
+        parsedVal = moment(Number(val))   
+      } else {
+        parsedVal = moment(val)
+      }
+      return (parsedVal.isValid()) ? parsedVal : null
     }
   }
 };
