@@ -3,13 +3,11 @@
     <a-date-picker class="ncform-date-picker"
       v-if="type === 'date'"
       :placeholder="placeholder || $nclang(typeOptions[type].placeholder)"
-      :disabled="disabled"
-      :readonly="readonly"
+      :disabled="disabled || readonly"
       :allowClear="mergeConfig.clearable"
       v-show="!hidden"
-      v-model="modelVal"
-      :format="mergeConfig.format || $nclang(typeOptions[type].format)"
-      :value-format="mergeConfig.valueFormat"
+      v-model="momentModelVal"
+      :defaultValue="defaultValue" 
       >
     </a-date-picker>
   </div>
@@ -41,6 +39,7 @@
 
 <script>
 import ncformCommon from '@ncform/ncform-common';
+import moment from 'moment';
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin;
 
@@ -73,9 +72,19 @@ export default {
     }
   },
 
+  created() {
+    console.log("==created")
+    console.log(this.value)
+    if (this.value) {
+      this.$data.momentModelVal = moment(Number(this.value))
+    } else {
+      this.$data.momentModelVal = null
+    }    
+  },
+
   mounted() {
     if(this.$data.modelVal){
-      this.$data.modelVal = this.mergeConfig.valueFormat ? this.$data.modelVal : new Date(parseInt(this.$data.modelVal));
+      // this.$data.modelVal = this.mergeConfig.valueFormat ? this.$data.modelVal : new Date(parseInt(this.$data.modelVal));
     }
   },
 
@@ -109,12 +118,20 @@ export default {
         type: "date",  // year/month/date/week/datetime
         format: '',
         valueFormat: ''
-      }
+      },
       // modelVal：请使用该值来绑定实际的组件的model
+      momentModelVal: null
     };
   },
 
   computed: {
+    defaultValue() {
+      if (this.value) {
+        return moment(Number(this.value))
+      } else {
+        return null
+      }
+    },
     // disabled / readonly / hidden / placeholder 你可以直接使用这些变量来控制组件的行为
     type() {
       if(!this.$data.typeOptions[this.mergeConfig.type]){
@@ -125,10 +142,30 @@ export default {
     }
   },
 
+  watch: {
+    momentModelVal(newVal) {
+      const val = this._processMomentModelVal(newVal);
+      // // this.$options.tempProcessedVal = val; // 用这个变量来记录处理过后的值，然后下面进行比较，避免循环
+      // // this.$emit("input", val);
+      this.$data.modelVal = val
+      console.log("------")
+      console.log(val)
+    }
+  },
+
   methods: {
+    moment,
     // 你可以通过该方法在modelVal传出去之前进行加工处理，即在this.$emit('input')之前
-    _processModelVal(newVal){
-      return `${newVal ? (this.mergeConfig.valueFormat ? newVal : +new Date(newVal)) : ''}`;
+    _processMomentModelVal(newVal){
+      console.log("===")
+      console.log(newVal.format())
+      if (newVal) {
+        return newVal.valueOf().toString()
+      } else {
+        return newVal
+      }
+      
+      //return `${newVal ? (this.mergeConfig.valueFormat ? newVal : +new Date(newVal)) : ''}`;
     }
   }
 };
