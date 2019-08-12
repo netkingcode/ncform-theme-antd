@@ -166,6 +166,86 @@
                 ui: {
                   widget: 'date-picker',
                   widgetConfig: {
+                    type: 'year'
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          title: {
+            cn: '[属性] type: 日期控件类型. 可选项：[ year | month | date | week | datetime ]',
+            en: '[ATTR] type: date control type. Optional: [ year | month | date | week | datetime ]'
+          },
+          schema: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                ui: {
+                  widget: 'date-picker',
+                  widgetConfig: {
+                    type: 'month'
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          title: {
+            cn: '[属性] type: 日期控件类型. 可选项：[ year | month | date | week | datetime ]',
+            en: '[ATTR] type: date control type. Optional: [ year | month | date | week | datetime ]'
+          },
+          schema: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                ui: {
+                  widget: 'date-picker',
+                  widgetConfig: {
+                    type: 'date'
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          title: {
+            cn: '[属性] type: 日期控件类型. 可选项：[ year | month | date | week | datetime ]',
+            en: '[ATTR] type: date control type. Optional: [ year | month | date | week | datetime ]'
+          },
+          schema: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                ui: {
+                  widget: 'date-picker',
+                  widgetConfig: {
+                    type: 'week'
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          title: {
+            cn: '[属性] type: 日期控件类型. 可选项：[ year | month | date | week | datetime ]',
+            en: '[ATTR] type: date control type. Optional: [ year | month | date | week | datetime ]'
+          },
+          schema: {
+            type: 'object',
+            properties: {
+              date: {
+                type: 'string',
+                ui: {
+                  widget: 'date-picker',
+                  widgetConfig: {
                     type: 'datetime'
                   }
                 }
@@ -186,7 +266,7 @@
                 ui: {
                   widget: 'date-picker',
                   widgetConfig: {
-                    clearable: false
+                    clearable: true
                   }
                 }
               }
@@ -208,7 +288,7 @@
                   widget: 'date-picker',
                   widgetConfig: {
                     type: 'date',
-                    format: 'yyyy-MM-dd'
+                    format: 'MM-DD-YYYY'
                   }
                 }
               }
@@ -233,7 +313,7 @@
                 ui: {
                   widget: 'date-picker',
                   widgetConfig: {
-                    valueFormat: 'yyyy-MM-dd'
+                    valueFormat: 'YYYY-MM-DD'
                   }
                 }
               }

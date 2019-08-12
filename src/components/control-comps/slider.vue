@@ -1,6 +1,6 @@
 <template>
   <div style="float:left;">
-      <el-slider
+      <a-slider
         :disabled="disabled || readonly"
         :placeholder="placeholder"
         v-show="!hidden"
@@ -8,7 +8,7 @@
         :min="mergeConfig.min"
         :max="mergeConfig.max"
         :step="mergeConfig.step"
-      ></el-slider>
+      ></a-slider>
   </div>
 </template>
 

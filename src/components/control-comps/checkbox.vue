@@ -3,29 +3,29 @@
     class="ncform-checkbox"
     :style="{display: hidden ? 'none' : ''}"
   >
-    <el-checkbox
+    <a-checkbox
       v-if="mergeConfig.selectAll && !readonly"
       :class="'check-all'"
       :disabled="disabled"
       :indeterminate="isIndeterminate"
       v-model="isCheckAll"
       @change="handleCheckAllChange"
-    >{{$nclang('all')}}</el-checkbox>
+    >{{$nclang('all')}}</a-checkbox>
 
-    <el-checkbox-group
+    <a-checkbox-group
       v-if="!readonly"
       size="mini"
       :disabled="disabled"
       v-model="modelVal"
       @change="handleCheckedOptChange"
     >
-      <component :is="'el-checkbox' + (mergeConfig.type === 'button' ? '-button' : '')"
+      <component :is="'a-checkbox' + (mergeConfig.type === 'button' ? '-button' : '')"
         v-for="opt in dataSource"
         :key="opt[mergeConfig.itemValueField]"
-        :label="opt[mergeConfig.itemValueField]"
+        :value="opt[mergeConfig.itemValueField]"
         :class="mergeConfig.type === 'checkbox' && mergeConfig.arrangement === 'v' ? 'is-vertical' : ''"
       >{{opt[mergeConfig.itemLabelField]}}</component>
-    </el-checkbox-group>
+    </a-checkbox-group>
 
     <label
       v-show="readonly"
@@ -60,14 +60,18 @@
       margin-right: 17px;
     }
 
-    .el-checkbox-group {
+    .ant-checkbox-group {
       display: inline-block;
+    }
+
+    .is-vertical.ant-checkbox-wrapper {
+      margin-left: 0;
     }
 
     .is-vertical {
       display: block;
 
-      & + .el-checkbox {
+      & + .ant-checkbox {
         margin-left: 0;
         margin-top: 15px;
       }
@@ -146,6 +150,7 @@
           itemDataKey: "", // 选中项的数据字段，可通过 {{$temp.[key]}} 取得
         },
         // modelVal：请使用该值来绑定实际的组件的model
+        modelVal: []
       }
     },
 

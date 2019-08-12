@@ -8,8 +8,31 @@
       v-show="!hidden"
       v-model="momentModelVal"
       :defaultValue="defaultValue" 
+      :format="mergeConfig.format || $nclang(typeOptions[type].format)"      
       >
     </a-date-picker>
+    <a-month-picker class="ncform-date-picker"
+      v-if="type === 'month'"
+      :placeholder="placeholder || $nclang(typeOptions[type].placeholder)"
+      :disabled="disabled || readonly"
+      :allowClear="mergeConfig.clearable"
+      v-show="!hidden"
+      v-model="momentModelVal"
+      :defaultValue="defaultValue" 
+      :format="mergeConfig.format || $nclang(typeOptions[type].format)"      
+      >
+    </a-month-picker>
+    <a-week-picker class="ncform-date-picker"
+      v-if="type === 'week'"
+      :placeholder="placeholder || $nclang(typeOptions[type].placeholder)"
+      :disabled="disabled || readonly"
+      :allowClear="mergeConfig.clearable"
+      v-show="!hidden"
+      v-model="momentModelVal"
+      :defaultValue="defaultValue" 
+      :format="mergeConfig.format || $nclang(typeOptions[type].format)"      
+      >
+    </a-week-picker>
   </div>
 </template>
 
@@ -53,7 +76,7 @@ export default {
       chDate: 'Choose Date',
       chWeek: 'Choose Week',
       chTime: 'Choose Datetime',
-      weekFormat: 'Week WW of yyyy'
+      weekFormat: 'Week WW of YYYY'
     },
     zh_cn: {
       chYear: '选择年份',
@@ -61,7 +84,7 @@ export default {
       chDate: '选择日期',
       chWeek: '选择周',
       chTime: '选择时间',
-      weekFormat: 'yyyy年 第WW周'
+      weekFormat: 'YYYY年 第WW周'
     }
   },
 
@@ -73,7 +96,7 @@ export default {
   },
 
   created() {
-    this.$data.momentModelVal = this._convertValue(this.value)
+    this.$data.momentModelVal = this._toMoment(this.value)
     this.$data.defaultValue = this.$data.momentModelVal
     // console.log("==created")
     // console.log(this.value)
@@ -143,30 +166,26 @@ export default {
 
   watch: {
     momentModelVal(newVal) {
-      const val = this._processMomentModelVal(newVal);
+      const val = this._momentToValue(newVal);
       // // this.$options.tempProcessedVal = val; // 用这个变量来记录处理过后的值，然后下面进行比较，避免循环
       // // this.$emit("input", val);
       this.$data.modelVal = val
-      console.log("------")
-      console.log(val)
     }
   },
 
   methods: {
     moment,
     // 你可以通过该方法在modelVal传出去之前进行加工处理，即在this.$emit('input')之前
-    _processMomentModelVal(newVal){
-      console.log("===")
-      console.log(newVal.format())
-      if (newVal) {
-        return newVal.valueOf().toString()
+    _momentToValue(val){
+      var isTimestamp = !this.mergeConfig.valueFormat || this.mergeConfig.valueFormat === 'timestamp'
+      if (val) {
+        return isTimestamp ? val.valueOf().toString() : val.format(this.mergeConfig.valueFormat)
       } else {
-        return newVal
+        return '' 
       }
-      
       //return `${newVal ? (this.mergeConfig.valueFormat ? newVal : +new Date(newVal)) : ''}`;
     },
-    _convertValue(val){
+    _toMoment(val){
       if (!val) return null
       var parsedVal
       if (!this.mergeConfig.valueFormat || this.mergeConfig.valueFormat === 'timestamp') {

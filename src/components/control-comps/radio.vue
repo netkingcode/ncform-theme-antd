@@ -1,18 +1,18 @@
 <template>
     <div class="ncform-radio">
-      <el-radio-group
+      <a-radio-group
         v-model="modelVal"
         :disabled="disabled"
         v-show="!hidden && !readonly"
         size="mini"
       >
-        <component :is="'el-radio' + (mergeConfig.type === 'button' ? '-button' : '')"
+        <component :is="'a-radio' + (mergeConfig.type === 'button' ? '-button' : '')"
           v-for="opt in dataSource"
           :key="opt[mergeConfig.itemValueField]"
-          :label="opt[mergeConfig.itemValueField]"
+          :value="opt[mergeConfig.itemValueField]"
           :class="mergeConfig.type === 'radio' && mergeConfig.arrangement === 'v' ? 'is-vertical' : ''"
         >{{opt[mergeConfig.itemLabelField]}}</component>
-      </el-radio-group>
+      </a-radio-group>
 
       <label v-show="readonly" class="label-read">{{labelRead}}</label>
     </div>
