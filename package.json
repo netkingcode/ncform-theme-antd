@@ -1,6 +1,6 @@
 {
   "name": "ncform-theme-antd",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "ncform ant design vue widgets",
   "main": "index.js",
   "scripts": {

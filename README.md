@@ -1,8 +1,9 @@
 # ncform-theme-antd
-ncform widgets of ant design vue
+Ncform widgets of ant design vue, porting from ncform-theme-element.
 
-## todo
+Only part of widgets are ported, not suitable for production.
 
+## Unsupported widgets or attributes:
 
 ### input
 
